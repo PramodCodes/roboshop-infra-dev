@@ -18,3 +18,30 @@ module "mongodb" {
         Name = "${local.ec2_name}-mongodb"
     })
 }
+# how we will know if userdata is success or failure ? we cannot so we will use terraform provisioners
+# we can use null resource in terraform to connect with terraform provisioners , null resource means 
+# it will not create any resource but it will run the provisioners and it is not related to any provisioners
+resource "null_resource" "mongodb" {
+
+  triggers = {
+    instance_id = module.mongodb.id
+  }
+
+  connection {
+    host = module.mongodb.id
+    type = "ssh"
+    user = "centos"
+    password = "DevOps321"
+  }
+  provisioner "file" {
+    source      = "bootstrap.sh"
+    destination = "/tmp/bootstrap.sh"
+  }
+  provisioner "remote-exec" {
+    # Bootstrap script called with private_ip of each node in the cluster
+    inline = [
+      "chmod +x /tmp/bootstrap.sh",
+      "sudo /tmp/bootstrap.sh"
+    ]
+  }
+}
