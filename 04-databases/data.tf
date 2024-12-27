@@ -75,6 +75,10 @@ data "aws_ssm_parameter" "vpn_sg_id" {
   name  = "/${var.project_name}/${var.environment}/vpn_sg_id"
 }
 
+data "aws_ssm_parameter" "mongodb_sg_id" {
+  name = "/${var.project_name}/${var.environment}/mongodb_sg_id"
+}
+
 # data sources for default vpc to ansible usage
 data "aws_vpc" "default_vpc_info" {
   default = true

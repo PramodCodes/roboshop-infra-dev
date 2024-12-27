@@ -41,7 +41,7 @@ resource "null_resource" "mongodb" {
     # Bootstrap script called with private_ip of each node in the cluster
     inline = [
       "chmod +x /tmp/bootstrap.sh",
-      "sudo /tmp/bootstrap.sh"
+      "sudo /tmp/bootstrap.sh mongodb dev" # you need to provide the arguments for shell script
     ]
   }
 }
