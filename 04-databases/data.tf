@@ -19,15 +19,15 @@ data "aws_ami" "centos8" {
 }
 
 # reading the security group ids from ssm for db instances
-# data "aws_ssm_parameter" "mongodb_sg_id" {
-#   name = "/${var.project_name}/${var.environment}/mongodb_sg_id"
-# }
-# data "aws_ssm_parameter" "redis_sg_id" {
-#   name = "/${var.project_name}/${var.environment}/redis_sg_id"
-# }
-# data "aws_ssm_parameter" "mysql_sg_id" {
-#   name = "/${var.project_name}/${var.environment}/mysql_sg_id"
-# }
+data "aws_ssm_parameter" "mongodb_sg_id" {
+  name = "/${var.project_name}/${var.environment}/mongodb_sg_id"
+}
+data "aws_ssm_parameter" "redis_sg_id" {
+  name = "/${var.project_name}/${var.environment}/redis_sg_id"
+}
+data "aws_ssm_parameter" "mysql_sg_id" {
+  name = "/${var.project_name}/${var.environment}/mysql_sg_id"
+}
 # data "aws_ssm_parameter" "rabbitmq_sg_id" {
 #   name = "/${var.project_name}/${var.environment}/rabbitmq_sg_id"
 # }
@@ -73,10 +73,6 @@ data "aws_ssm_parameter" "database_subnets_ids" {
 # we will use vpn sg id in ansible because vpn sg has 22 port and ansible needs 22 port
 data "aws_ssm_parameter" "vpn_sg_id" {
   name  = "/${var.project_name}/${var.environment}/vpn_sg_id"
-}
-
-data "aws_ssm_parameter" "mongodb_sg_id" {
-  name = "/${var.project_name}/${var.environment}/mongodb_sg_id"
 }
 
 # data sources for default vpc to ansible usage

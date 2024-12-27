@@ -1,4 +1,4 @@
-# instances creation for db tier
+# instances creation for db tier using ansible pull
 module "mongodb" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   ami = data.aws_ami.centos8.id
@@ -28,7 +28,7 @@ resource "null_resource" "mongodb" {
   }
 
   connection {
-    host = module.mongodb.id
+    host = module.mongodb.private_ip
     type = "ssh"
     user = "centos"
     password = "DevOps321"
@@ -45,6 +45,83 @@ resource "null_resource" "mongodb" {
     ]
   }
 }
+# redis instance using ansible pull
+module "redis" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
+  ami = data.aws_ami.centos8.id
+  name = "${local.ec2_name}-mongodb"
+  instance_type          = "t2.micro"
+  vpc_security_group_ids = [data.aws_ssm_parameter.redis_sg_id.value]
+  subnet_id              = local.database_subnet_id
+  tags = merge(
+    var.common_tags,
+    {
+        Componenet = "redis"
+    },{
+        Name = "${local.ec2_name}-redis"
+    })
+}
+
+resource "null_resource" "redis" {
+  triggers = {
+    instance_id = module.redis.id
+  }
+  connection {
+    host = module.redis.private_ip
+    type = "ssh"
+    user = "centos"
+    password = "DevOps321"
+  }
+  provisioner "file" {
+    source      = "bootstrap.sh"
+    destination = "/tmp/bootstrap.sh"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/bootstrap.sh",
+      "sudo /tmp/bootstrap.sh redis dev" # you need to provide the arguments for shell script
+    ]
+  }
+}
+# mysql instance using ansible pull
+module "mysql" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
+  ami = data.aws_ami.centos8.id
+  name = "${local.ec2_name}-mongodb"
+  instance_type          = "t2.micro"
+  vpc_security_group_ids = [data.aws_ssm_parameter.mysql_sg_id.value]
+  subnet_id              = local.database_subnet_id
+  tags = merge(
+    var.common_tags,
+    {
+        Componenet = "mysql"
+    },{
+        Name = "${local.ec2_name}-mysql"
+    })
+}
+
+resource "null_resource" "mysql" {
+  triggers = {
+    instance_id = module.mysql.id
+  }
+  connection {
+    host = module.mysql.private_ip
+    type = "ssh"
+    user = "centos"
+    password = "DevOps321"
+  }
+  provisioner "file" {
+    source      = "bootstrap.sh"
+    destination = "/tmp/bootstrap.sh"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/bootstrap.sh",
+      "sudo /tmp/bootstrap.sh mysql dev" # you need to provide the arguments for shell script
+    ]
+  }
+}
+
 # gist 
 # create an instance and triggering a null resouce instead of user data because userdata executables are not visible(we copy the file to the instance from local to execute it)
 
