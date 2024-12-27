@@ -45,3 +45,6 @@ resource "null_resource" "mongodb" {
     ]
   }
 }
+# gist 
+# create an instance and triggering a null resouce instead of user data because userdata executables are not visible(we copy the file to the instance from local to execute it)
+
