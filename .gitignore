@@ -1,0 +1,8 @@
+
+/01-vpc/.terraform
+/02-sg/.terraform
+/03-vpn/.terraform
+01-vpc/.terraform.lock.hcl
+02-sg/.terraform.lock.hcl
+/04-ec2/.terraform
+03-vpn/.terraform.lock.hcl

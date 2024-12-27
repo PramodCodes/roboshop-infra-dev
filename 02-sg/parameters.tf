@@ -57,3 +57,9 @@ resource "aws_ssm_parameter" "vpn_sg_id" {
   type  = "String"
   value = module.open_vpn.sg_id
 }
+# ALB tier
+resource "aws_ssm_parameter" "app_alb_sg_id" {
+  name  = "/${var.project_name}/${var.environment}/app_alb_sg_id"
+  type  = "String"
+  value = module.app_alb.sg_id
+}

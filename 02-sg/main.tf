@@ -125,18 +125,16 @@ module "web" {
     sg_description = "sg for web"
 }
 
-# web tier
+# all componenets should accept request from alb on 8080 this sits between applications 
 module "app_alb" {
     source = "../../terraform-aws-security-group"
     project_name = var.project_name
     environment = var.environment
-
-    #lets use data source for vpc
     vpc_id = data.aws_ssm_parameter.vpc_id.value
     sg_name = "APP-ALB"
     sg_description = "sg for app-alb"
 }
-8:00
+
 # vpn tier
 module "open_vpn" {
     source = "../../terraform-aws-security-group"
@@ -282,7 +280,7 @@ resource "aws_security_group_rule" "payment_rabbitmq" {
 # - catalogue:
 #   - name: catalogue_vpn=>vpn_catalogue
 #     purpose: catalogue should accept traffic on 22 from vpn
-#   - name: catalogue_web=>web_catalogue
+#   - name: catalogue_web=>web_catalogue =>app_alb_catalogue
 #     purpose: catalogue should accept traffic on 8080 from web
 #   - name: catalogue_cart=>cart_catalogue
 #     purpose: catalogue should accept traffic on 8080 from cart
@@ -295,22 +293,23 @@ resource "aws_security_group_rule" "vpn_catalogue" {
   security_group_id = module.catalogue.sg_id 
 }
 
-resource "aws_security_group_rule" "web_catalogue" {
-  source_security_group_id = module.web.sg_id
-  type              = "ingress"
-  from_port         = 8080
-  to_port           = 8080
-  protocol          = "tcp"
-  security_group_id = module.catalogue.sg_id 
-}
-resource "aws_security_group_rule" "cart_catalogue" {
-  source_security_group_id = module.cart.sg_id
-  type              = "ingress"
-  from_port         = 8080
-  to_port           = 8080
-  protocol          = "tcp"
-  security_group_id = module.catalogue.sg_id 
-}
+# resource "aws_security_group_rule" "web_catalogue" {
+#   source_security_group_id = module.web.sg_id
+#   type              = "ingress"
+#   from_port         = 8080
+#   to_port           = 8080
+#   protocol          = "tcp"
+#   security_group_id = module.catalogue.sg_id 
+# }
+# need to check why this is not needed anymore , how will cart and catalogue will communicate ?
+# resource "aws_security_group_rule" "cart_catalogue" {
+#   source_security_group_id = module.cart.sg_id
+#   type              = "ingress"
+#   from_port         = 8080
+#   to_port           = 8080
+#   protocol          = "tcp"
+#   security_group_id = module.catalogue.sg_id 
+# }
 # - user:
 #   - name: user_vpn=>vpn_user
 #     purpose: user should accept traffic on 22 from vpn
@@ -327,22 +326,22 @@ resource "aws_security_group_rule" "vpn_user" {
   protocol          = "tcp"
   security_group_id = module.user.sg_id 
 }
-resource "aws_security_group_rule" "web_user" {
-  source_security_group_id = module.web.sg_id
-  type              = "ingress"
-  from_port         = 8080
-  to_port           = 8080
-  protocol          = "tcp"
-  security_group_id = module.user.sg_id 
-}
-resource "aws_security_group_rule" "payment_user" {
-  source_security_group_id = module.payment.sg_id
-  type              = "ingress"
-  from_port         = 8080
-  to_port           = 8080
-  protocol          = "tcp"
-  security_group_id = module.user.sg_id 
-}
+# resource "aws_security_group_rule" "web_user" {
+#   source_security_group_id = module.web.sg_id
+#   type              = "ingress"
+#   from_port         = 8080
+#   to_port           = 8080
+#   protocol          = "tcp"
+#   security_group_id = module.user.sg_id 
+# }
+# resource "aws_security_group_rule" "payment_user" {
+#   source_security_group_id = module.payment.sg_id
+#   type              = "ingress"
+#   from_port         = 8080
+#   to_port           = 8080
+#   protocol          = "tcp"
+#   security_group_id = module.user.sg_id 
+# }
 # - cart:
 #   - name: cart_vpn=>vpn_cart
 #     purpose: cart should accept traffic on 22 from vpn
@@ -462,3 +461,22 @@ resource "aws_security_group_rule" "web_internet" {
 #   protocol          = "tcp"
 #   security_group_id = module.mysql.sg_id 
 # }
+
+# ALB layer
+# as we have to allow traffic from ALB to catalogue web_catalogue will be replaced with app_alb_catalogue
+resource "aws_security_group_rule" "app_alb_catalogue" {
+  source_security_group_id = module.app_alb.sg_id
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  security_group_id = module.catalogue.sg_id  
+}
+resource "aws_security_group_rule" "app_alb_user" {
+  source_security_group_id = module.app_alb.sg_id
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  security_group_id = module.user.sg_id 
+}
