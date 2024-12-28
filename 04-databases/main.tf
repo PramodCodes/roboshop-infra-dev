@@ -53,6 +53,8 @@ module "redis" {
   instance_type          = "t2.micro"
   vpc_security_group_ids = [data.aws_ssm_parameter.redis_sg_id.value]
   subnet_id              = local.database_subnet_id
+  # the following will attach a ec2 file
+  iam_instance_profile = "ec2-role-shell-script"
   tags = merge(
     var.common_tags,
     {
@@ -104,6 +106,7 @@ resource "null_resource" "mysql" {
   triggers = {
     instance_id = module.mysql.id
   }
+
   connection {
     host = module.mysql.private_ip
     type = "ssh"
@@ -118,6 +121,46 @@ resource "null_resource" "mysql" {
     inline = [
       "chmod +x /tmp/bootstrap.sh",
       "sudo /tmp/bootstrap.sh mysql dev" # you need to provide the arguments for shell script
+    ]
+  }
+}
+# rabbitmq instance using ansible pull
+# we will use ansible community module for rabbitmq
+module "rabbitmq" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
+  ami = data.aws_ami.centos8.id
+  name = "${local.ec2_name}-mongodb"
+  instance_type          = "t2.micro"
+  vpc_security_group_ids = [data.aws_ssm_parameter.rabbitmq_sg_id.value]
+  subnet_id              = local.database_subnet_id
+  tags = merge(
+    var.common_tags,
+    {
+        Componenet = "rabbitmq"
+    },{
+        Name = "${local.ec2_name}-rabbitmq"
+    })
+}
+
+resource "null_resource" "rabbitmq" {
+  triggers = {
+    instance_id = module.rabbitmq.id
+  }
+
+  connection {
+    host = module.rabbitmq.private_ip
+    type = "ssh"
+    user = "centos"
+    password = "DevOps321"
+  }
+  provisioner "file" {
+    source      = "bootstrap.sh"
+    destination = "/tmp/bootstrap.sh"
+  }
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /tmp/bootstrap.sh",
+      "sudo /tmp/bootstrap.sh rabbitmq dev" # you need to provide the arguments for shell script
     ]
   }
 }
