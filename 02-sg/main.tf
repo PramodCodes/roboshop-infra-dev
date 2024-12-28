@@ -480,3 +480,12 @@ resource "aws_security_group_rule" "app_alb_user" {
   protocol          = "tcp"
   security_group_id = module.user.sg_id 
 }
+  # app alb should be internal and only accept vpn traffic
+resource "aws_security_group_rule" "vpn_app_alb" {
+  source_security_group_id = module.open_vpn.sg_id
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  security_group_id = module.app_alb.sg_id 
+}
