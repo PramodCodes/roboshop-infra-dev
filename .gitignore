@@ -8,3 +8,6 @@
 03-vpn/.terraform.lock.hcl
 /04-databases/.terraform
 04-databases/.terraform.lock.hcl
+05-app-alb/.terraform/terraform.tfstate
+/05-app-alb/.terraform
+05-app-alb/.terraform.lock.hcl
