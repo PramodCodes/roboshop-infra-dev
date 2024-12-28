@@ -4,7 +4,7 @@ resource "aws_lb" "app_alb" {
   load_balancer_type = "application"
   # app alb should be internal and only accept vpn traffic
   # load balancer has a condition for in how many subnets it should be created
-  security_groups    = [data.aws_ssm_parameter.vpc_id.value]
+  security_groups    = [data.aws_ssm_parameter.app_alb_sg_id.value]
   subnets            = split(",",data.aws_ssm_parameter.priavte_subnets_ids.value)
 
   # enable_deletion_protection = true #because we need to delete after the class
@@ -40,10 +40,6 @@ module "records" {
     {
       name    = "*.app-${var.environment}"
       type    = "A"
-      ttl     = 1
-      records = [
-        module.mongodb.private_ip,
-      ]
       alias = {
         name    = aws_lb.app_alb.dns_name
         zone_id = aws_lb.app_alb.zone_id

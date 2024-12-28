@@ -292,7 +292,15 @@ resource "aws_security_group_rule" "vpn_catalogue" {
   protocol          = "tcp"
   security_group_id = module.catalogue.sg_id 
 }
-
+# for testing load balancer
+resource "aws_security_group_rule" "vpn_catalogu_http" {
+  source_security_group_id = module.open_vpn.sg_id
+  type              = "ingress"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  security_group_id = module.catalogue.sg_id 
+}
 # resource "aws_security_group_rule" "web_catalogue" {
 #   source_security_group_id = module.web.sg_id
 #   type              = "ingress"

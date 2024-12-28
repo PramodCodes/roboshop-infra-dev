@@ -11,3 +11,5 @@
 05-app-alb/.terraform/terraform.tfstate
 /05-app-alb/.terraform
 05-app-alb/.terraform.lock.hcl
+/06-catalogue/.terraform
+06-catalogue/.terraform.lock.hcl
