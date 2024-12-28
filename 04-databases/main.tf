@@ -90,7 +90,7 @@ module "mysql" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   ami = data.aws_ami.centos8.id
   name = "${local.ec2_name}-mongodb"
-  instance_type          = "t2.micro"
+  instance_type          = "t3.small"
   vpc_security_group_ids = [data.aws_ssm_parameter.mysql_sg_id.value]
   subnet_id              = local.database_subnet_id
   tags = merge(
@@ -129,8 +129,8 @@ resource "null_resource" "mysql" {
 module "rabbitmq" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   ami = data.aws_ami.centos8.id
-  name = "${local.ec2_name}-mongodb"
-  instance_type          = "t2.micro"
+  name = "${local.ec2_name}-rabbitmq"
+  instance_type          = "t3.small"
   vpc_security_group_ids = [data.aws_ssm_parameter.rabbitmq_sg_id.value]
   subnet_id              = local.database_subnet_id
   tags = merge(
