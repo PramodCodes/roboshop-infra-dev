@@ -8,7 +8,7 @@ variable "common_tags" {
 
 variable "tags" {
     default = {
-        Componenet = "component"
+        Componenet = "catalogue"
     }
 }
 
