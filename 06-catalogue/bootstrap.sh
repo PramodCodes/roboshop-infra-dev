@@ -1,7 +1,7 @@
 #!/bin/bash
 # setting debug mode with -x
 set -x
-echo "Catalogue setup"
+echo "Catalogue setup "
 component=$1
 envionment=$2 # dont use env here , its a reserved keyword in linux
 #  we are installign asnbile with python pip
