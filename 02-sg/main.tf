@@ -183,6 +183,17 @@ resource "aws_security_group_rule" "vpn_mongodb" {
   security_group_id = module.mongodb.sg_id #
 }
 
+# resource "aws_security_group_rule" "icmp_vpc_mongodb" {
+#   //TODO add name tag seems complicated
+#   # source_security_group_id = module.open_vpn.sg_id # we are accepting connection from vpn
+#   cidr_blocks       = ["10.0.0.0/16"]  
+#   type              = "ingress"
+#   from_port         = -1
+#   to_port           = -1
+#   protocol          = "icmp"
+  
+#   security_group_id = module.mongodb.sg_id #
+# }
 # since mongo db is allowing connection from catalogue we use name as catalogue_mongodb
 resource "aws_security_group_rule" "catalogue_mongodb" {
   //TODO add name tag seems complicated
