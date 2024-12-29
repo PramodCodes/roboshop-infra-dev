@@ -22,7 +22,7 @@ module "catalogue" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   ami = data.aws_ami.centos8.id
   name = "${local.name}-${var.tags.Componenet}-ami"
-  instance_type          = "t3.small"
+  instance_type          = "t2.micro"
   vpc_security_group_ids = [data.aws_ssm_parameter.catalogue_sg_id.value]
   subnet_id              = element(split(",",data.aws_ssm_parameter.private_subnets_ids.value),0)
   # the following will attach a ec2 file
@@ -76,8 +76,13 @@ resource "aws_ami_from_instance" "catalogue" {
 
 # terminate instance after creating ami
 resource "null_resource" "catalogue_terminate" {
+  # we are changing the trigger from every change of ami, instead we must do it instance
+  # ami id will keep changing when timestamp changes, what happening is this instance will be terminated when instance is being configured
+  # now the trigger (deletion) happens when catalogue isntance id changes
+  
   triggers = {
-    ami_id = aws_ami_from_instance.catalogue.id
+  #   ami_id = aws_ami_from_instance.catalogue.id
+    instance_id = module.catalogue.id
   }
 # we already have a connection to the instance so we don't need remote exec we can use local exec
   provisioner "local-exec" {
@@ -91,11 +96,7 @@ resource "aws_launch_template" "catalogue_template" {
   name = "${local.name}-${var.tags.Componenet}"
   image_id = aws_ami_from_instance.catalogue.id
   instance_initiated_shutdown_behavior = "terminate"
-  instance_type = "t2.micro"
-  # location of instance az
-  # placement {
-  #   availability_zone = "us-west-2a"
-  # }
+  instance_type = "t2.micro" 
   vpc_security_group_ids = [data.aws_ssm_parameter.catalogue_sg_id.value]
   tag_specifications {
     resource_type = "instance"
