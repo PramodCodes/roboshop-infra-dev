@@ -303,8 +303,8 @@ resource "aws_security_group_rule" "vpn_catalogue" {
   protocol          = "tcp"
   security_group_id = module.catalogue.sg_id 
 }
-# for testing load balancer
-resource "aws_security_group_rule" "vpn_catalogu_http" {
+# for testing load balancer and connection from catalogue to mongodb we are allowig this port
+resource "aws_security_group_rule" "http_vpn_catalogue" {
   source_security_group_id = module.open_vpn.sg_id
   type              = "ingress"
   from_port         = 8080
