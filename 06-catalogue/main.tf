@@ -8,7 +8,9 @@ resource "aws_lb_target_group" "catalogue" {
   port     = 8080
   protocol = "HTTP"
   vpc_id   = data.aws_ssm_parameter.vpc_id.value
-
+  # deregistration delay is the time it takes to deregister the instance from the target group,
+  #  the instance will not recieve any new requests and complete pending requests before deregistration
+  deregistration_delay = 30
   health_check {
     healthy_threshold = 2
     interval = 10
@@ -120,7 +122,7 @@ resource "aws_autoscaling_group" "catalogue" {
   name                      = "${local.name}-${var.tags.Componenet}"
   max_size                  = 10
   min_size                  = 1
-  health_check_grace_period = 60
+  health_check_grace_period = 30
   health_check_type         = "ELB"
   desired_capacity          = 2
   # we will use launch template instead of launch configuration
@@ -152,4 +154,34 @@ resource "aws_autoscaling_group" "catalogue" {
     delete = "15m"
   }
 
+}
+# aws lb listener rules
+# what does listener do ? and how it works?
+# listener is the entry point for the load balancer, it listens to the requests and forwards them to the target group
+resource "aws_lb_listener_rule" "catalogue" {
+  listener_arn = data.aws_ssm_parameter.app_alb_listner_arn.value
+  priority     = 10
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.catalogue.arn
+  }
+  condition {
+    host_header {
+      values = ["${var.tags.Componenet}.app-${var.environment}.${var.zone_name}"]
+    }
+  }
+}
+
+# we need to check average cpu utilization and scale the instances based on that we will use policy to do so
+resource "aws_autoscaling_policy" "catalogue" {
+  autoscaling_group_name = "${local.name}-${var.tags.Componenet}"
+  name                   = "${local.name}-${var.tags.Componenet}"
+  policy_type            = "TargetTrackingScaling"
+  target_tracking_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ASGAverageCPUUtilization"
+    }
+
+    target_value = 5.0 # this means that the average cpu utilization must be 5% if it goes above 5% it will scale out , scale out means it will start creating instances
+  }
 }
