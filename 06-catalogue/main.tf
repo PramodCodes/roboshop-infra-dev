@@ -182,7 +182,7 @@ resource "aws_autoscaling_policy" "catalogue" {
     predefined_metric_specification {
       predefined_metric_type = "ASGAverageCPUUtilization"
     }
-    # this means that the average cpu utilization must be 5% if it goes above 5% it will scale out , 
+    # this means that the average cpu utilization must be 50% if it goes above 5% it will scale out , 
     # scale out means it will start creating instances
     target_value = 50.0 
   }
