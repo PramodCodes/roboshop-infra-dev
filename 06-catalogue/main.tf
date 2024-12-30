@@ -174,14 +174,16 @@ resource "aws_lb_listener_rule" "catalogue" {
 
 # we need to check average cpu utilization and scale the instances based on that we will use policy to do so
 resource "aws_autoscaling_policy" "catalogue" {
-  autoscaling_group_name = "${local.name}-${var.tags.Componenet}"
+  depends_on = [aws_autoscaling_group.catalogue]
+  autoscaling_group_name = aws_autoscaling_group.catalogue.name
   name                   = "${local.name}-${var.tags.Componenet}"
   policy_type            = "TargetTrackingScaling"
   target_tracking_configuration {
     predefined_metric_specification {
       predefined_metric_type = "ASGAverageCPUUtilization"
     }
-
-    target_value = 5.0 # this means that the average cpu utilization must be 5% if it goes above 5% it will scale out , scale out means it will start creating instances
+    # this means that the average cpu utilization must be 5% if it goes above 5% it will scale out , 
+    # scale out means it will start creating instances
+    target_value = 5.0 
   }
 }

@@ -125,6 +125,7 @@ module "web" {
     sg_description = "sg for web"
 }
 
+# LB tier
 # all componenets should accept request from alb on 8080 this sits between applications 
 module "app_alb" {
     source = "../../terraform-aws-security-group"
@@ -134,7 +135,15 @@ module "app_alb" {
     sg_name = "APP-ALB"
     sg_description = "sg for app-alb"
 }
-
+# accepts traffic from internet
+module "web_alb" {
+    source = "../../terraform-aws-security-group"
+    project_name = var.project_name
+    environment = var.environment
+    vpc_id = data.aws_ssm_parameter.vpc_id.value
+    sg_name = "web_alb"
+    sg_description = "sg for web_alb"
+}
 # vpn tier
 module "open_vpn" {
     source = "../../terraform-aws-security-group"
@@ -507,4 +516,14 @@ resource "aws_security_group_rule" "vpn_app_alb" {
   to_port           = 80
   protocol          = "tcp"
   security_group_id = module.app_alb.sg_id 
+}
+# lb SG
+resource "aws_security_group_rule" "internet_web_alb" {
+  # because we are using https we are allowing 443 and allowing all traffic.443 needs certificates
+  cidr_blocks       = ["0.0.0.0/0"] 
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp" #"tcp" to allow all ports protocol is -1
+  security_group_id = module.web_alb.sg_id 
 }
