@@ -527,3 +527,16 @@ resource "aws_security_group_rule" "internet_web_alb" {
   protocol          = "tcp" #"tcp" to allow all ports protocol is -1
   security_group_id = module.web_alb.sg_id 
 }
+# app alb must accpet connections from web so we need ingress rule
+# app_alb_web > web_app_alb
+# source: web_sg_id
+# ingress rule: 80
+resource "aws_security_group_rule" "web_app_alb" {
+# app alb must accpet connections from web so we need ingress rule
+  source_security_group_id = module.web.sg_id # this is web because its web to app alb
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp" 
+  security_group_id = module.app_alb.sg_id 
+}

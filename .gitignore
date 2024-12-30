@@ -16,3 +16,10 @@
 07-acm/.terraform/terraform.tfstate
 /07-acm/.terraform
 07-acm/.terraform.lock.hcl
+/08-web/.terraform
+08-web/.terraform.lock.hcl
+/08-web-alb/.terraform
+08-web-alb/.terraform.lock.hcl
+09-web/.terraform/terraform.tfstate
+09-web/.terraform.lock.hcl
+/09-web/.terraform
