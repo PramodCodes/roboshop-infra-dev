@@ -1,3 +1,8 @@
+# way of issue fixing
+# if you are running remote exec , the machiene you run must have access to it, 
+# in other words , if you are running on windows you need to have vpn connection if you are trying to exec remote exec on private instance
+# if issue is between instances check with ping or telent
+# if it fails check ports , security groups, vpn peering connection , and firewall blocking in instances
 resource "aws_lb_target_group" "catalogue" {
   name     = "${local.name}-${var.tags.Componenet}"
   port     = 8080
@@ -107,8 +112,44 @@ resource "aws_launch_template" "catalogue_template" {
   }
     depends_on         = [ null_resource.catalogue_terminate ]
 }
-# way of issue fixing
-# if you are running remote exec , the machiene you run must have access to it, 
-# in other words , if you are running on windows you need to have vpn connection if you are trying to exec remote exec on private instance
-# if issue is between instances check with ping or telent
-# if it fails check ports , security groups, vpn peering connection , and firewall blocking in instance
+
+
+# now that we have launch template lets create the autoscaling group
+
+resource "aws_autoscaling_group" "catalogue" {
+  name                      = "${local.name}-${var.tags.Componenet}"
+  max_size                  = 10
+  min_size                  = 1
+  health_check_grace_period = 60
+  health_check_type         = "ELB"
+  desired_capacity          = 2
+  # we will use launch template instead of launch configuration
+  vpc_zone_identifier       = split(",",data.aws_ssm_parameter.private_subnets_ids.value)
+  # where to place the launch template
+  target_group_arns = [aws_lb_target_group.catalogue.arn]
+  launch_template {
+    id      = aws_launch_template.catalogue_template.id
+    version = aws_launch_template.catalogue_template.latest_version
+  }
+  # instance refresh means recreate the instance with the new launch template
+  instance_refresh {
+    strategy = "Rolling"
+    preferences { 
+    # this means that to refresh to happen the 50% of the existing instances must be healthy
+      min_healthy_percentage = 50
+    }
+  # what triggers the refresh - change in launch template
+    triggers = ["launch_template"]
+  }
+  
+  tag {
+    key                 = "Name"
+    value               = "${local.name}-${var.tags.Componenet}"
+    propagate_at_launch = true
+  }
+# instance must be created with in the time out
+  timeouts {
+    delete = "15m"
+  }
+
+}
