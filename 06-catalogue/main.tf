@@ -184,6 +184,6 @@ resource "aws_autoscaling_policy" "catalogue" {
     }
     # this means that the average cpu utilization must be 5% if it goes above 5% it will scale out , 
     # scale out means it will start creating instances
-    target_value = 5.0 
+    target_value = 50.0 
   }
 }
