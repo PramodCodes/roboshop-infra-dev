@@ -97,6 +97,7 @@ resource "aws_launch_template" "catalogue_template" {
   image_id = aws_ami_from_instance.catalogue.id
   instance_initiated_shutdown_behavior = "terminate"
   instance_type = "t2.micro" 
+  update_default_version = true # this will update the default version of the launch template for each new version of the launch template creation
   vpc_security_group_ids = [data.aws_ssm_parameter.catalogue_sg_id.value]
   tag_specifications {
     resource_type = "instance"
