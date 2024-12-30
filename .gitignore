@@ -14,3 +14,5 @@
 /06-catalogue/.terraform
 06-catalogue/.terraform.lock.hcl
 07-acm/.terraform/terraform.tfstate
+/07-acm/.terraform
+07-acm/.terraform.lock.hcl

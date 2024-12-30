@@ -15,7 +15,7 @@ resource "aws_acm_certificate" "pka" {
 # gets certificates from aws and itereates over them to create a record in Route53
 resource "aws_route53_record" "pka" {
   for_each = {
-    for dvo in aws_acm_certificate.example.domain_validation_options : dvo.domain_name => {
+    for dvo in aws_acm_certificate.pka.domain_validation_options : dvo.domain_name => {
       name   = dvo.resource_record_name
       record = dvo.resource_record_value
       type   = dvo.resource_record_type
@@ -28,12 +28,12 @@ resource "aws_route53_record" "pka" {
   ttl             = 1
   type            = each.value.type
   # this is our hosted zone
-  zone_id         = aws_route53_zone.pka.zone_id
+  zone_id         = data.aws_route53_zone.pka.zone_id
 }
 
 # validation of records for the domain name
 resource "aws_acm_certificate_validation" "pka" {
-  certificate_arn         = aws_acm_certificate.pka.arn
+  certificate_arn         = aws_acm_certificate.pka.arn //to check
   validation_record_fqdns = [for record in aws_route53_record.pka : record.fqdn]
 }
 # till 8:04 am -o-
