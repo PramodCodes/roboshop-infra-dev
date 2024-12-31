@@ -15,7 +15,7 @@ resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.web.arn
   port              = "443"
   protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  ssl_policy        = "ELBSecurityPolicy-TLS13-1-2-2021-06"
   certificate_arn   = data.aws_ssm_parameter.acm_certificate_arn.value
 
   default_action {
@@ -33,7 +33,7 @@ resource "aws_lb_listener" "https" {
 module "records" {
   source  = "terraform-aws-modules/route53/aws//modules/records"
 
-  zone_name = "pka.in.net"
+  zone_name = var.zone_name
 
   records = [
     {
