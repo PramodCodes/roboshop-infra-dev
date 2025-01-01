@@ -33,3 +33,4 @@
 13-cart/.terraform.lock.hcl
 14-payment/.terraform.lock.hcl
 12-shipping/.terraform.lock.hcl
+14-payment/errored.tfstate
