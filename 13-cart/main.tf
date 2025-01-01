@@ -1,6 +1,7 @@
 module "cart" {
 
-  source               = "../../terraform-roboshop-app"
+  # source               = "../../terraform-roboshop-app"
+  source               = "git::https://github.com/PramodCodes/terraform-roboshop-app.git?ref=main"
   vpc_id               = data.aws_ssm_parameter.vpc_id.value
   component_sg_id      = data.aws_ssm_parameter.cart_sg_id.value
   private_subnets_ids  = split(",", data.aws_ssm_parameter.private_subnets_ids.value) # lets send list from here
