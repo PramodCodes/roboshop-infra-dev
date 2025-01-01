@@ -535,6 +535,50 @@ resource "aws_security_group_rule" "app_alb_user" {
   protocol          = "tcp"
   security_group_id = module.user.sg_id 
 }
+# cart is dependent on catalogue , for catalogue the request comes from app_alb so we need to add cart sg in app_alb
+resource "aws_security_group_rule" "cart_app_alb" {
+  source_security_group_id = module.cart.sg_id
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  security_group_id = module.app_alb.sg_id 
+}
+
+resource "aws_security_group_rule" "shipping_app_alb" {
+  source_security_group_id = module.shipping.sg_id
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  security_group_id = module.app_alb.sg_id 
+}
+
+resource "aws_security_group_rule" "payment_app_alb" {
+  source_security_group_id = module.payment.sg_id
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  security_group_id = module.app_alb.sg_id 
+}
+resource "aws_security_group_rule" "user_app_alb" {
+  source_security_group_id = module.user.sg_id
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  security_group_id = module.app_alb.sg_id 
+}
+resource "aws_security_group_rule" "catalogue_app_alb" {
+  source_security_group_id = module.catalogue.sg_id
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  security_group_id = module.app_alb.sg_id 
+}
+
   # app alb should be internal and only accept vpn traffic
 resource "aws_security_group_rule" "vpn_app_alb" {
   source_security_group_id = module.open_vpn.sg_id
