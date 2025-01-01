@@ -25,3 +25,11 @@
 /09-web/.terraform
 /10-cdn/.terraform
 10-cdn/.terraform.lock.hcl
+/11-user/.terraform
+11-user/.terraform.lock.hcl
+/12-shipping/.terraform
+/13-cart/.terraform
+/14-payment/.terraform
+13-cart/.terraform.lock.hcl
+14-payment/.terraform.lock.hcl
+12-shipping/.terraform.lock.hcl
