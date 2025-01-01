@@ -1,4 +1,3 @@
-
 variable "project_name" {
   default = "roboshop"
 }
@@ -21,7 +20,7 @@ variable "common_tags" {
 
 variable "tags" {
   default = {
-    Componenet = "user"
+    Componenet = "shipping"
   }
 }
 

@@ -1,11 +1,11 @@
-module "user" {
+module "cart" {
 
   source               = "../../terraform-roboshop-app"
   vpc_id               = data.aws_ssm_parameter.vpc_id.value
-  component_sg_id      = data.aws_ssm_parameter.user_sg_id.value
+  component_sg_id      = data.aws_ssm_parameter.cart_sg_id.value
   private_subnets_ids  = split(",", data.aws_ssm_parameter.private_subnets_ids.value) # lets send list from here
   app_alb_listner_arn  = data.aws_ssm_parameter.app_alb_listner_arn.value
-  rule_priority = 20
+  rule_priority = 40
   iam_instance_profile = var.iam_instance_profile
   project_name         = var.project_name
   environment          = var.environment

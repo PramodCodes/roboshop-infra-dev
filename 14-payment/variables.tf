@@ -21,7 +21,7 @@ variable "common_tags" {
 
 variable "tags" {
   default = {
-    Componenet = "user"
+    Componenet = "payment"
   }
 }
 

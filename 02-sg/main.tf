@@ -373,7 +373,7 @@ resource "aws_security_group_rule" "vpn_user" {
 # - cart:
 #   - name: cart_vpn=>vpn_cart
 #     purpose: cart should accept traffic on 22 from vpn
-#   - name: cart_web=>web_cart
+#   - name: cart_web=>web_cart=>this is conencted to LB now , so becomes app_alb_cart
 #     purpose: cart should accept traffic on 8080 from web
 #   - name: cart_shipping=>shipping_cart
 #     purpose: cart should accept traffic on 8080 from shipping
@@ -387,8 +387,17 @@ resource "aws_security_group_rule" "vpn_cart" {
   protocol          = "tcp"
   security_group_id = module.cart.sg_id 
 }
-resource "aws_security_group_rule" "web_cart" {
-  source_security_group_id = module.web.sg_id
+# resource "aws_security_group_rule" "web_cart" {
+#   source_security_group_id = module.web.sg_id
+#   type              = "ingress"
+#   from_port         = 8080
+#   to_port           = 8080
+#   protocol          = "tcp"
+#   security_group_id = module.cart.sg_id 
+# }
+
+resource "aws_security_group_rule" "app_alb_cart" {
+  source_security_group_id = module.app_alb.sg_id
   type              = "ingress"
   from_port         = 8080
   to_port           = 8080
@@ -415,7 +424,7 @@ resource "aws_security_group_rule" "payment_cart" {
 # - shipping:
 #   - name: shipping_vpn=>vpn_shipping
 #     purpose: shipping should accept traffic on 22 from vpn
-#   - name: shipping_web=>web_shipping
+#   - name: shipping_web=>web_shipping=> this becomes alb_shipping as now the connection is from alb and health check is done by alb    
 #     purpose: shipping should accept traffic on 8080 from web
 
 resource "aws_security_group_rule" "vpn_shipping" {
@@ -426,8 +435,17 @@ resource "aws_security_group_rule" "vpn_shipping" {
   protocol          = "tcp"
   security_group_id = module.shipping.sg_id 
 }
-resource "aws_security_group_rule" "web_shipping" {
-  source_security_group_id = module.web.sg_id
+# the shipping is connected to alb so we need to add alb sg in shipping
+# resource "aws_security_group_rule" "web_shipping" {
+#   source_security_group_id = module.web.sg_id
+#   type              = "ingress"
+#   from_port         = 8080
+#   to_port           = 8080
+#   protocol          = "tcp"
+#   security_group_id = module.shipping.sg_id 
+# }
+resource "aws_security_group_rule" "app_alb_shipping" {
+  source_security_group_id = module.app_alb.sg_id
   type              = "ingress"
   from_port         = 8080
   to_port           = 8080
@@ -437,7 +455,7 @@ resource "aws_security_group_rule" "web_shipping" {
 # - payment:
 #   - name: payment_vpn=>vpn_payment
 #     purpose: payment should accept traffic on 22 from vpn
-#   - name: payment_web=>web_payment
+#   - name: payment_web=>web_payment => app_alb_payment
 #     purpose: payment should accept traffic on 8080 from web
 
 resource "aws_security_group_rule" "vpn_payment" {
@@ -448,15 +466,24 @@ resource "aws_security_group_rule" "vpn_payment" {
   protocol          = "tcp"
   security_group_id = module.payment.sg_id 
 }
-resource "aws_security_group_rule" "web_payment" {
-  source_security_group_id = module.web.sg_id
+# resource "aws_security_group_rule" "web_payment" {
+#   source_security_group_id = module.web.sg_id
+#   type              = "ingress"
+#   from_port         = 8080
+#   to_port           = 8080
+#   protocol          = "tcp"
+#   security_group_id = module.payment.sg_id 
+# }
+
+
+resource "aws_security_group_rule" "app_alb_payment" {
+  source_security_group_id = module.app_alb.sg_id
   type              = "ingress"
   from_port         = 8080
   to_port           = 8080
   protocol          = "tcp"
   security_group_id = module.payment.sg_id 
 }
-
 # web tier
 # web:- name: web_vpn=>vpn_web
 #   purpose: web should accept traffic on 22 from vpn
