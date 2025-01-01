@@ -225,17 +225,17 @@ resource "aws_security_group_rule" "vpn_redis" {
   security_group_id = module.redis.sg_id 
 }
 
-resource "aws_security_group_rule" "cart_redis" {
-  source_security_group_id = module.cart.sg_id 
+resource "aws_security_group_rule" "user_redis" {
+  source_security_group_id = module.user.sg_id
   type              = "ingress"
-  from_port         = 27017
-  to_port           = 27017
+  from_port         = 6379
+  to_port           = 6379
   protocol          = "tcp"
   security_group_id = module.redis.sg_id 
 }
 
-resource "aws_security_group_rule" "user_redis" {
-  source_security_group_id = module.user.sg_id
+resource "aws_security_group_rule" "cart_redis" {
+  source_security_group_id = module.cart.sg_id 
   type              = "ingress"
   from_port         = 6379
   to_port           = 6379
@@ -273,8 +273,8 @@ resource "aws_security_group_rule" "vpn_rabbitmq" {
 resource "aws_security_group_rule" "payment_rabbitmq" {
   source_security_group_id = module.payment.sg_id 
   type              = "ingress"
-  from_port         = 6379
-  to_port           = 6379
+  from_port         = 5672
+  to_port           = 5672
   protocol          = "tcp"
   security_group_id = module.rabbitmq.sg_id 
 }
@@ -455,6 +455,7 @@ resource "aws_security_group_rule" "vpn_payment" {
   protocol          = "tcp"
   security_group_id = module.payment.sg_id 
 }
+
 # resource "aws_security_group_rule" "web_payment" {
 #   source_security_group_id = module.web.sg_id
 #   type              = "ingress"
@@ -463,7 +464,6 @@ resource "aws_security_group_rule" "vpn_payment" {
 #   protocol          = "tcp"
 #   security_group_id = module.payment.sg_id 
 # }
-
 
 resource "aws_security_group_rule" "app_alb_payment" {
   source_security_group_id = module.app_alb.sg_id
