@@ -7,16 +7,15 @@ pipeline{
         }
     }
     // parameters section, this section is used to define the parameters that can be used in the pipeline
-        // define the environment variables canbe accesed globally ,the following are additional to existing environment variables
+    // define the environment variables canbe accesed globally ,the following are additional to existing environment variables
 
     options {
-        // timeout for the pipeline, if the pipeline is running more than 1 hour it will be aborted
-        // timeout(time: 1, unit: 'HOURS')
-        // disableConcurrentBuilds()
-        // coloring with ansicolor plugin , you need to install before you can use this
+
         ansiColor('xterm')
     }
-
+    parameters {
+        choice(name: 'action', choices: ['apply', 'destroy'], description: 'What action do you want to perform on infra?')
+    }
     //build stages
     stages {
         stage('Init') {
@@ -36,6 +35,9 @@ pipeline{
             }
         }
         stage('Deploy') {
+            when {
+                    "${prams.action}" == 'apply'
+            }
             input {
                 message "Should we continue?"
                 ok "Yes, we should."
