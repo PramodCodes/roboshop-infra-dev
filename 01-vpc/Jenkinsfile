@@ -13,6 +13,7 @@ pipeline{
         // timeout for the pipeline, if the pipeline is running more than 1 hour it will be aborted
         // timeout(time: 1, unit: 'HOURS')
         // disableConcurrentBuilds()
+        // coloring with ansicolor plugin , you need to install before you can use this
         ansiColor('xterm')
     }
 
