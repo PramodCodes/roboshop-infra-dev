@@ -29,7 +29,7 @@ pipeline{
         stage('Test') {
             steps {
                 sh """
-                    cd 02-vpc
+                    cd 01-vpc
                     terraform plan
                 """
             }
