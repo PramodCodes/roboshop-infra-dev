@@ -28,26 +28,26 @@ pipeline{
                 stage('04-databases') {
                     steps {
                     sh """
-                        echo 'creating 04-databases'
+                        echo 'destroying 04-databases'
                         pwd
                         cd 04-databases
                         pwd
                         terraform init -reconfigure
                         terraform destroy -auto-approve
-                        echo 'databases created'
+                        echo 'databases destroyed'
                     """
                     }
                 }
                 stage('05-app-alb') {
                     steps {
                     sh """
-                        echo 'creating 05-app-alb'
+                        echo 'destroying 05-app-alb'
                         pwd
                         cd 05-app-alb
                         pwd
                         terraform init -reconfigure
                         terraform destroy -auto-approve
-                        echo 'app-alb created'
+                        echo 'app-alb destroyed'
                     """
                     }
                 }
@@ -56,39 +56,39 @@ pipeline{
         stage('03-vpn') {
             steps {
                sh """
-                  echo 'creating 03-vpn'
+                  echo 'destroying 03-vpn'
                   pwd
                   cd 03-vpn
                   pwd
                   terraform init -reconfigure
                   terraform destroy -auto-approve
-                  echo 'VPN created'
+                  echo 'VPN destroyed'
                """
             }
         }
         stage('SG') {
             steps {
                sh """
-                  echo 'creating SG'
+                  echo 'destroying SG'
                   pwd
                   cd 02-sg
                   pwd
                   terraform init -reconfigure
                   terraform destroy -auto-approve
-                  echo 'SG created'
+                  echo 'SG destroyed'
                """
             }
         }
         stage('VPC') {
             steps {
                sh """
-                  echo 'creating VPC'
+                  echo 'destroying VPC'
                   pwd
                   cd 01-vpc
                   pwd
                   terraform init -reconfigure
                   terraform destroy -auto-approve
-                  echo 'VPC created'
+                  echo 'VPC destroyed'
                """
             }
         }
