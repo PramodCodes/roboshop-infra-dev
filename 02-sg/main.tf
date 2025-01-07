@@ -2,7 +2,8 @@
 
 ## DB tier
 module "mongodb" {
-    source = "../../terraform-aws-security-group"
+    # source = "../../terraform-aws-security-group"
+    source = "github.com/PramodCodes/terraform-aws-security-group.git?ref=master"
     project_name = var.project_name
     environment = var.environment
 
@@ -14,7 +15,8 @@ module "mongodb" {
 }
 
 module "redis" {
-    source = "../../terraform-aws-security-group"
+    # source = "../../terraform-aws-security-group"
+    source = "github.com/PramodCodes/terraform-aws-security-group.git?ref=master"
     project_name = var.project_name
     environment = var.environment
 
@@ -25,7 +27,8 @@ module "redis" {
 }
 
 module "mysql" {
-    source = "../../terraform-aws-security-group"
+    # source = "../../terraform-aws-security-group"
+    source = "github.com/PramodCodes/terraform-aws-security-group.git?ref=master"
     project_name = var.project_name
     environment = var.environment
 
@@ -36,7 +39,8 @@ module "mysql" {
 }
 
 module "rabbitmq" {
-    source = "../../terraform-aws-security-group"
+    # source = "../../terraform-aws-security-group"
+    source = "github.com/PramodCodes/terraform-aws-security-group.git?ref=master"
     project_name = var.project_name
     environment = var.environment
 
@@ -48,7 +52,8 @@ module "rabbitmq" {
 
 # microservices tier
 module "catalogue" {
-    source = "../../terraform-aws-security-group"
+    # source = "../../terraform-aws-security-group"
+    source = "github.com/PramodCodes/terraform-aws-security-group.git?ref=master"
     project_name = var.project_name
     environment = var.environment
 
@@ -59,7 +64,8 @@ module "catalogue" {
 }
 
 module "user" {
-    source = "../../terraform-aws-security-group"
+    # source = "../../terraform-aws-security-group"
+    source = "github.com/PramodCodes/terraform-aws-security-group.git?ref=master"
     project_name = var.project_name
     environment = var.environment
 
@@ -70,7 +76,8 @@ module "user" {
 }
 
 module "cart" {
-    source = "../../terraform-aws-security-group"
+        # source = "../../terraform-aws-security-group"
+    source = "github.com/PramodCodes/terraform-aws-security-group.git?ref=master"
     project_name = var.project_name
     environment = var.environment
 
@@ -81,7 +88,8 @@ module "cart" {
 }
 
 module "shipping" {
-    source = "../../terraform-aws-security-group"
+        # source = "../../terraform-aws-security-group"
+    source = "github.com/PramodCodes/terraform-aws-security-group.git?ref=master"
     project_name = var.project_name
     environment = var.environment
 
@@ -92,7 +100,8 @@ module "shipping" {
 }
 
 module "payment" {
-    source = "../../terraform-aws-security-group"
+        # source = "../../terraform-aws-security-group"
+    source = "github.com/PramodCodes/terraform-aws-security-group.git?ref=master"
     project_name = var.project_name
     environment = var.environment
 
@@ -104,7 +113,8 @@ module "payment" {
 
 # web tier
 module "web" {
-    source = "../../terraform-aws-security-group"
+        # source = "../../terraform-aws-security-group"
+    source = "github.com/PramodCodes/terraform-aws-security-group.git?ref=master"
     project_name = var.project_name
     environment = var.environment
 
@@ -117,7 +127,8 @@ module "web" {
 # LB tier
 # all componenets should accept request from alb on 8080 this sits between applications 
 module "app_alb" {
-    source = "../../terraform-aws-security-group"
+        # source = "../../terraform-aws-security-group"
+    source = "github.com/PramodCodes/terraform-aws-security-group.git?ref=master"
     project_name = var.project_name
     environment = var.environment
     vpc_id = data.aws_ssm_parameter.vpc_id.value
@@ -126,7 +137,8 @@ module "app_alb" {
 }
 # accepts traffic from internet
 module "web_alb" {
-    source = "../../terraform-aws-security-group"
+        # source = "../../terraform-aws-security-group"
+    source = "github.com/PramodCodes/terraform-aws-security-group.git?ref=master"
     project_name = var.project_name
     environment = var.environment
     vpc_id = data.aws_ssm_parameter.vpc_id.value
@@ -135,7 +147,8 @@ module "web_alb" {
 }
 # vpn tier
 module "open_vpn" {
-    source = "../../terraform-aws-security-group"
+        # source = "../../terraform-aws-security-group"
+    source = "github.com/PramodCodes/terraform-aws-security-group.git?ref=master"
     project_name = var.project_name
     environment = var.environment
 
