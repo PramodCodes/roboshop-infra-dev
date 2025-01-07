@@ -27,9 +27,12 @@ pipeline{
             steps {
                sh """
                   echo 'creating VPC'
+                  pwd
                   cd 01-vpc
+                  pwd
                   terraform init -reconfigure
                   terraform apply -auto-approve
+                  echo 'VPC created'
                """
             }
         }
@@ -37,9 +40,12 @@ pipeline{
             steps {
                sh """
                   echo 'creating SG'
+                  pwd
                   cd 02-sg
+                  pwd
                   terraform init -reconfigure
                   terraform apply -auto-approve
+                  echo 'SG created'
                """
             }
         }
@@ -47,9 +53,12 @@ pipeline{
             steps {
                sh """
                   echo 'creating 03-vpn'
+                  pwd
                   cd 03-vpn
+                  pwd
                   terraform init -reconfigure
                   terraform apply -auto-approve
+                  echo 'VPN created'
                """
             }
         }
@@ -59,9 +68,12 @@ pipeline{
                     steps {
                     sh """
                         echo 'creating 04-databases'
+                        pwd
                         cd 04-databases
+                        pwd
                         terraform init -reconfigure
                         terraform apply -auto-approve
+                        echo 'databases created'
                     """
                     }
                 }
@@ -69,9 +81,12 @@ pipeline{
                     steps {
                     sh """
                         echo 'creating 05-app-alb'
+                        pwd
                         cd 05-app-alb
+                        pwd
                         terraform init -reconfigure
                         terraform apply -auto-approve
+                        echo 'app-alb created'
                     """
                     }
                 }
