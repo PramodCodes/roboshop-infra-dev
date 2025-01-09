@@ -8,7 +8,7 @@ module "vpn" {
 # we need sg for vpn before the vpn instance
   subnet_id              = data.aws_subnet.default_vpc_subnet.id
 # the following is the user_data script that will be executed on the instance to setup vpn
-  user_data = templatefiles(
+  user_data = templatefile(
                 ["openvpn.sh",
                   "agent_setup.sh"
                 ]) # file is a function to load files
