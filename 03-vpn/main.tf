@@ -33,6 +33,38 @@ module "records" {
       records = [
         "${module.vpn.public_ip}",
       ]
+    },    
+    {
+      name    = "jenkinsagnet"
+      type    = "A"
+      ttl     = 1
+      records = [
+        "${module.vpn.private_ip}",
+      ]
     },
   ]
+}
+resource "null_resource" "vpn" {
+
+  triggers = {
+    instance_id = module.vpn.id
+  }
+
+  connection {
+    host = module.vpn.public_ip
+    type = "ssh"
+    user = "centos"
+    password = "DevOps321"
+  }
+  provisioner "file" {
+    source      = "agent_setup.sh"
+    destination = "/tmp/agent_setup.sh"
+  }
+  provisioner "remote-exec" {
+    # Bootstrap script called with private_ip of each node in the cluster
+    inline = [
+      "chmod +x /tmp/agent_setup.sh",
+      "sudo /tmp/agent_setup.sh" # you need to provide the arguments for shell script
+    ]
+  }
 }
