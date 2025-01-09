@@ -2,7 +2,7 @@ module "vpn" {
   source                 = "terraform-aws-modules/ec2-instance/aws"
   ami                    = data.aws_ami.centos8.id
   name                   = "${local.ec2_name}-vpn"
-  instance_type          = "t3.medium"
+  instance_type          = "t3.small"
   vpc_security_group_ids = [data.aws_ssm_parameter.default_vpn_sg_id.value]
 # if you dont clealy metion .value you wont get the value since its an object you will see error
 # we need sg for vpn before the vpn instance
@@ -33,38 +33,6 @@ module "records" {
       records = [
         "${module.vpn.public_ip}",
       ]
-    },    
-    {
-      name    = "jenkinsagnet"
-      type    = "A"
-      ttl     = 1
-      records = [
-        "${module.vpn.private_ip}",
-      ]
     },
   ]
 }
-# resource "null_resource" "vpn" {
-
-#   triggers = {
-#     instance_id = module.vpn.id
-#   }
-
-#   connection {
-#     host = module.vpn.public_ip
-#     type = "ssh"
-#     user = "centos"
-#     password = "DevOps321"
-#   }
-#   provisioner "file" {
-#     source      = "agent_setup.sh"
-#     destination = "/tmp/agent_setup.sh"
-#   }
-#   provisioner "remote-exec" {
-#     # Bootstrap script called with private_ip of each node in the cluster
-#     inline = [
-#       "chmod +x /tmp/agent_setup.sh",
-#       "sudo /tmp/agent_setup.sh" # you need to provide the arguments for shell script
-#     ]
-#   }
-# }
