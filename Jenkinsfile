@@ -18,7 +18,7 @@ pipeline{
     // this can be used across pipeline
     environment {
         packageVersion = ''
-        nexusURL = '172.31.92.207:8081'
+        nexusURL = 'nexus.pka.in.net:8081'
     }
     //build stages
     
@@ -87,6 +87,18 @@ pipeline{
                         terraform init -reconfigure
                         terraform apply -auto-approve
                         echo 'app-alb created'
+                    """
+                    }
+                }
+                stage('06-catalogue') {
+                    steps {
+                    sh """
+                        echo 'creating 06-catalogue'
+                        cd 06-catalogue
+                        pwd
+                        terraform init -reconfigure
+                        terraform apply -auto-approve
+                        echo 'catalogue infra created'
                     """
                     }
                 }
