@@ -1,5 +1,4 @@
 #!/bin/bash
-clear
 set -xe
 sudo wget -O /etc/yum.repos.d/jenkins.repo \
     https://pkg.jenkins.io/redhat-stable/jenkins.repo
@@ -20,4 +19,4 @@ ehco "terraform installation successful setting nodejs for catalogue"
 dnf module disable nodejs -y
 dnf module enable nodejs:18 -y
 dnf install nodejs -y
-cat /var/lib/jenkins/secrets/initialAdminPassword
+# cat /var/lib/jenkins/secrets/initialAdminPassword
