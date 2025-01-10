@@ -159,7 +159,7 @@ resource "aws_autoscaling_group" "catalogue" {
 # what does listener do ? and how it works?
 # listener is the entry point for the load balancer, it listens to the requests and forwards them to the target group
 resource "aws_lb_listener_rule" "catalogue" {
-  listener_arn = data.aws_ssm_parameter.app_alb_listner_arn.value
+  listener_arn = data.aws_ssm_parameter.app_alb_listener_arn.value
   priority     = 10
   action {
     type             = "forward"
