@@ -90,18 +90,19 @@ pipeline{
                     """
                     }
                 }
-                stage('06-catalogue') {
-                    steps {
-                    sh """
-                        echo 'creating 06-catalogue'
-                        cd 06-catalogue
-                        pwd
-                        terraform init -reconfigure
-                        terraform apply -auto-approve
-                        echo 'catalogue infra created'
-                    """
-                    }
-                }
+
+            }
+        }
+        stage('06-catalogue') {
+            steps {
+            sh """
+                echo 'creating 06-catalogue'
+                cd 06-catalogue
+                pwd
+                terraform init -reconfigure
+                terraform apply -auto-approve
+                echo 'catalogue infra created'
+            """
             }
         }
     }
